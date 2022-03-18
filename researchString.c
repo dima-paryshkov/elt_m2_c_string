@@ -1,20 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char* getString(int* lenght)
+char *getString(int *lenght)
 {
     fprintf(stdout, "Write a string to process\n");
 
     *lenght = 1;
 
-    char* string = (char*)malloc(*lenght * sizeof(char));
-
+    char *string = (char *)malloc(*lenght * sizeof(char));
+    if (string == NULL)
+        return NULL;
     char symbol = getchar();
 
     while (symbol != '\n')
     {
         string[(*lenght)++ - 1] = symbol;
-        string = (char*)realloc(string, *lenght * sizeof(char));
+        string = (char *)realloc(string, *lenght * sizeof(char));
+        if (string == NULL)
+            return NULL;
         symbol = getchar();
     }
     string[(*lenght)--] = '\0';
@@ -22,7 +25,7 @@ char* getString(int* lenght)
     return string;
 }
 
-int getCodeSymbolFromNumber(char* string, int l)
+int getCodeSymbolFromNumber(char *string, int l)
 {
     char maxChar = '0';
     for (int i = 0; i < l; i++)
@@ -38,10 +41,12 @@ int getCodeSymbolFromNumber(char* string, int l)
     return result;
 }
 
-char* convertAllNumbersToCharacters(char* inputString, const int* lenghtInStr, int* lenghtResultStr)
+char *convertAllNumbersToCharacters(char *inputString, const int *lenghtInStr, int *lenghtResultStr)
 {
     *lenghtResultStr = 1;
-    char* modifiedString = (char*)malloc(*lenghtResultStr);
+    char *modifiedString = (char *)malloc(*lenghtResultStr);
+    if (modifiedString == NULL)
+        return NULL;
 
     for (int i = 0, l = 0, code; i < *lenghtInStr; i++)
     {
@@ -60,10 +65,14 @@ char* convertAllNumbersToCharacters(char* inputString, const int* lenghtInStr, i
                 else
                     modifiedString[(*lenghtResultStr)++ - 1] = (char)code;
 
-                modifiedString = (char*)realloc(modifiedString, *lenghtResultStr);
+                modifiedString = (char *)realloc(modifiedString, *lenghtResultStr);
+                if (modifiedString == NULL)
+                    return NULL;
             }
             modifiedString[(*lenghtResultStr)++ - 1] = inputString[i];
-            modifiedString = (char*)realloc(modifiedString, *lenghtResultStr);
+            modifiedString = (char *)realloc(modifiedString, *lenghtResultStr);
+            if (modifiedString == NULL)
+                return NULL;
             l = 0;
         }
     }
@@ -73,15 +82,20 @@ char* convertAllNumbersToCharacters(char* inputString, const int* lenghtInStr, i
 
 int main()
 {
-    char* string;
+    char *string;
     int lenght;
     string = getString(&lenght);
+    if (string == NULL)
+        return -1;
 
     int lenghtModifiedString;
-    char* modifiedString = convertAllNumbersToCharacters(string, &lenght, &lenghtModifiedString);
+    char *modifiedString = convertAllNumbersToCharacters(string, &lenght, &lenghtModifiedString);
+    if (modifiedString == NULL)
+        return -1;
 
     fprintf(stdout, "%s", modifiedString);
 
+    free(string);
+    free(modifiedString);
     return 0;
 }
-
